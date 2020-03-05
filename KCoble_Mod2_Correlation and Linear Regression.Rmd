@@ -1,0 +1,106 @@
+---
+title: "Correlation and Simple Linear Regression Assignment"
+author: "Kathleen Coble"
+date: "2/2/2020"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+library(GGally)
+```
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+air = airquality
+```
+
+#Task 1: There are 6 variables and 153 observations. There is some missing data. Temperature is most likely to be the Y variable.
+
+```{r}
+air2 = air %>% drop_na()
+str(air2)
+  
+```
+
+#Task 2: There are now 111 observations after removing the missing data.
+
+```{r}
+library(ggcorrplot)
+```
+
+
+```{r}
+ggpairs(air2)
+```
+
+#Task 3: The variable "Temperature" is most strongly correlated with the “Ozone” variable, while "Wind" is least strongly correlated with the “Ozone” variable?
+
+```{r}
+ggplot(air2, aes(x=Temp, y=Ozone))+
+  geom_point()
+```
+
+#Task4: Temperature and Ozone appear to have a high correlation.
+
+```{r}
+model1 = lm(Temp ~ Ozone, air2)
+summary(model1)
+```
+
+```{r}
+confint(model1)
+```
+
+
+#Task 5: 
+# a. This is a good model because the p-value is less than .05, and the R squared value is almost .5 suggesting significance.
+# b. The slope coefficient likely falls between 67 and 71.
+
+```{r}
+ggplot(air2, aes(x=Temp, y=Ozone))+
+  geom_point()+
+  geom_smooth(method="lm",se = FALSE)
+```
+
+#Task7: Prediction for ozone when temp is 80
+```{r}
+69.37059 + 0.20006 * 80
+```
+
+```{r}
+temp_var = predict(model1, interval = "prediction")
+new_df = cbind(air2, temp_var)
+ggplot(new_df, aes(x=Temp, y=Ozone))+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, color = "red")+
+  geom_line(aes(y=lwr), color = "red", linetype = "dashed")+
+  geom_line(aes(x=upr), color = "red", linetype = "dashed")+
+  theme_bw()
+```
+
+#Task 8: To ensure the linear regression model is valid, we look for:
+# 1.	The predictor and response variable have a linear relationship - TRUE.
+# 2.	Model errors (residuals) are independent - TRUE 
+# 3.	Model residuals exhibit constant variance - TRUE
+# 4.	Model residuals are Normally-distributed
+
+#Task9: The model we constructed in Task 5 would be used to identify the lower and upper bounds. I have no concerns against recommending the model for use.
+
+
+
+
+
+
