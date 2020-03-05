@@ -1,0 +1,84 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+##Tidyverse Refresher
+
+Libraries  
+```{r}
+library(tidyverse) #this is a comment
+```
+
+```{r}
+cars = as.tibble(mtcars) #default dataset, no need to read-in dataset file
+str(cars) #examine structure 
+```
+
+Select  
+```{r}
+cars %>% select(mpg) #does not create a new data frame
+mpgonly = cars %>% select(mpg) #creates a new data frame called "mpgonly"
+str(mpgonly) #examine the structure
+glimpse(mpgonly) #alternative
+```
+
+Select multiple columns
+```{r}
+mpghp = cars %>% select(c(mpg,hp))
+str(mpghp)
+```
+
+Filter  
+```{r}
+lowmpg = cars %>% filter(mpg < 20)
+str(lowmpg)
+```
+
+Multiple condition filter  
+```{r}
+lowmpg8cyl = cars %>% filter(mpg < 20 & cyl == 8) #be sure to use == sign
+str(lowmpg8cyl)
+```
+
+Mutate  
+```{r}
+cars = cars %>% mutate(hpratio = hp/mpg)
+str(cars)
+```
+
+Grouping and Summarise  
+```{r}
+by_cyl = cars %>% group_by(cyl) %>% summarise(avghp = mean(hp))
+by_cyl #display the newly grouped and summarized data
+```
+
+ggplot2  (Scatterplot)
+```{r}
+ggplot(cars, aes(x = hp, y = mpg)) + geom_point() + theme_bw()
+```
+
+Barplot (count)
+```{r}
+ggplot(cars, aes(x=cyl)) + geom_bar() + theme_bw()
+```
+
+Barplot (count with color by "am" variable (automatic vs. manual transmission))  
+```{r}
+ggplot(cars, aes(x=cyl, fill = as.factor(am))) + geom_bar() + theme_bw() #use as.factor to convert (only in the ggplot function, not in the data frame) "am" to a categorical variable to use for fill
+```
+
+Non-stacked version of same thing  
+```{r}  
+ggplot(cars, aes(x=cyl, fill = as.factor(am))) + geom_bar(position=position_dodge()) + theme_bw() #position=position_dodge() to unstack
+```
+
+Line plot (typically used to show how a quantity changes or evolves over time, this example is a bit forced, as a scatterplot would be more appropriate)  
+```{r}
+ggplot(cars, aes(x=hp, y=qsec)) + geom_line() + theme_bw() #without points
+ggplot(cars, aes(x=hp, y=qsec)) + geom_line() + geom_point() + theme_bw() #with points
+```
+
+
+
+
